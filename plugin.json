@@ -1,0 +1,22 @@
+{
+  "version": "1.0.0",
+  "name": "TestEbaySdk",
+  "description": "Test plugin for Ebay SDK",
+  "namespace": "TestEbaySdk",
+  "pluginIcon":"icon_plugin_xs.png",
+  "author": "plentymarkets GmbH",
+  "email":"support@plentymarkets.eu",
+  "authorIcon":"icon_author_xs.png",
+  "shortDescription": {
+    "de": "Test plugin for Ebay SDK",
+    "en": "Test plugin for Ebay SDK"
+},
+  "license":"AGPL-3.0",
+  "categories": ["Plugins/Backend"],
+  "price":0.00,
+  "type": "general",
+  "serviceProvider": "TestEbaySdk\\TestEbaySdkServiceProvider",
+  "require": [
+    "EbaySdk"
+  ]
+}

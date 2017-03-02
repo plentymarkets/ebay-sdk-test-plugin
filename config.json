@@ -1,0 +1,16 @@
+[
+  {
+    "tab": "Account Settings",
+    "key": "refreshToken",
+    "label": "Refresh Token",
+    "type": "text",
+    "default": ""
+  },
+  {
+    "tab": "Account Settings",
+    "key": "accessToken",
+    "label": "Access Token",
+    "type": "text",
+    "default": ""
+  }
+]
