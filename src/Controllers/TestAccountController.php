@@ -10,6 +10,7 @@ use EbaySdk\Api\Account\Services\AccountService;
 use EbaySdk\Api\Account\Types\CreateAReturnPolicyRestRequest;
 use EbaySdk\Api\Account\Types\GetAFulfillmentPolicyByIDRestRequest;
 use EbaySdk\Api\Account\Types\GetFulfillmentPoliciesByMarketplaceRestRequest;
+use EbaySdk\Api\Account\Types\TimeDuration;
 use Plenty\Plugin\ConfigRepository;
 use Plenty\Plugin\Controller;
 use Plenty\Plugin\Http\Request;
@@ -82,23 +83,23 @@ class TestAccountController extends Controller
 		]);
 
 		/** @var CreateAReturnPolicyRestRequest $createAReturnPolicyRestRequest */
-		$createAReturnPolicyRestRequest = pluginApp(CreateAReturnPolicyRestRequest::class, [
-			'values' => [
-				'marketplaceId'           => MarketplaceIdEnum::C_EBAY_DE,
-				'name'                    => 'Test Return Policy REST',
-				'description'             => 'This is a test return policy',
-				'refundMethod'            => RefundMethodEnum::C_MONEY_BACK,
-				'restockingFeePercentage' => '10',
-				'returnInstructions'      => 'This are my return instructions',
-				'returnPeriod'            => [
-					'unit'  => TimeDurationUnitEnum::C_DAY,
-					'value' => 14,
-				],
-				'returnsAccepted'         => true,
-				'returnShippingCostPayer' => ReturnShippingCostPayerEnum::C_BUYER,
-			],
-		]);
+		$createAReturnPolicyRestRequest = pluginApp(CreateAReturnPolicyRestRequest::class);
 
+		$createAReturnPolicyRestRequest->marketplaceId = MarketplaceIdEnum::C_EBAY_DE;
+		$createAReturnPolicyRestRequest->name = 'Test Return Policy REST';
+		$createAReturnPolicyRestRequest->description = 'This is a test return policy';
+		$createAReturnPolicyRestRequest->refundMethod = RefundMethodEnum::C_MONEY_BACK;
+		$createAReturnPolicyRestRequest->restockingFeePercentage = '10';
+		$createAReturnPolicyRestRequest->returnInstructions = 'This are my return instructions';
+
+		/** @var TimeDuration $timeDuration */
+		$timeDuration = pluginApp(TimeDuration::class);
+		$timeDuration->unit = TimeDurationUnitEnum::C_DAY;
+		$timeDuration->value = 14;
+
+		$createAReturnPolicyRestRequest->returnPeriod = $timeDuration;
+		$createAReturnPolicyRestRequest->returnsAccepted = true;
+		$createAReturnPolicyRestRequest->returnShippingCostPayer = ReturnShippingCostPayerEnum::C_BUYER;
 
 		$response = $accountService->createAReturnPolicy($createAReturnPolicyRestRequest);
 
