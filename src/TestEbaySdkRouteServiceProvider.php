@@ -4,7 +4,6 @@ namespace TestEbaySdk;
 
 use Plenty\Plugin\RouteServiceProvider;
 use Plenty\Plugin\Routing\ApiRouter;
-use Plenty\Plugin\Routing\Router as WebRouter;
 
 /**
  * Class TestEbaySdkRouteServiceProvider
@@ -13,11 +12,10 @@ class TestEbaySdkRouteServiceProvider extends RouteServiceProvider
 {
 	/**
 	 * @param ApiRouter $api
-	 * @param WebRouter $webRouter
 	 */
-	public function map(ApiRouter $api, WebRouter $webRouter)
+	public function map(ApiRouter $api)
 	{
-		$api->version(['v1'], ['middleware' => []], function ($router)
+		$api->version(['v1'], ['middleware' => ['oauth']], function ($router)
 		{
 			$router->get('markets/ebay/test/get-fulfillment-policies-by-marketplace', [
 				'uses' => 'TestEbaySdk\Controllers\TestAccountController@getFulfillmentPoliciesByMarketplace'
@@ -25,6 +23,10 @@ class TestEbaySdkRouteServiceProvider extends RouteServiceProvider
 
 			$router->post('markets/ebay/test/create-a-return-policy', [
 				'uses' => 'TestEbaySdk\Controllers\TestAccountController@createReturnPolicy'
+			]);
+
+			$router->get('markets/ebay/test/get-a-fulfillment-policy-by-id', [
+				'uses' => 'TestEbaySdk\Controllers\TestAccountController@getFulfillmentPolicyById'
 			]);
 		});
 	}
