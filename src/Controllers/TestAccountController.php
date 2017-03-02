@@ -3,7 +3,11 @@
 namespace TestEbaySdk\Controllers;
 
 use EbaySdk\Api\Account\Enums\MarketplaceIdEnum;
+use EbaySdk\Api\Account\Enums\RefundMethodEnum;
+use EbaySdk\Api\Account\Enums\ReturnShippingCostPayerEnum;
+use EbaySdk\Api\Account\Enums\TimeDurationUnitEnum;
 use EbaySdk\Api\Account\Services\AccountService;
+use EbaySdk\Api\Account\Types\CreateAReturnPolicyRestRequest;
 use EbaySdk\Api\Account\Types\GetFulfillmentPoliciesByMarketplaceRestRequest;
 use Plenty\Plugin\ConfigRepository;
 use Plenty\Plugin\Controller;
@@ -31,30 +35,71 @@ class TestAccountController extends Controller
 	 */
 	public function getFulfillmentPoliciesByMarketplace()
 	{
-		/** @var AccountService $service */
-		$service = pluginApp(AccountService::class, [
+		/** @var AccountService $accountService */
+		$accountService = pluginApp(AccountService::class, [
 			'config' => [
-				'sandbox' => true,
-				'accessToken' => $this->config->get('TestEbaySdk.accessToken'),
+				'sandbox'      => true,
+				'accessToken'  => $this->config->get('TestEbaySdk.accessToken'),
 				'refreshToken' => $this->config->get('TestEbaySdk.refreshToken'),
 			]
 		]);
 
 		/** @var GetFulfillmentPoliciesByMarketplaceRestRequest $request */
-		$request = pluginApp(GetFulfillmentPoliciesByMarketplaceRestRequest::class);
+		$request = pluginApp(GetFulfillmentPoliciesByMarketplaceRestRequest::class, [
+			'values' => [
+				'marketplace_id' => MarketplaceIdEnum::C_EBAY_DE
+			],
+		]);
 
-
-		$request->marketplace_id = MarketplaceIdEnum::C_EBAY_DE;
-
-		$response = $service->getFulfillmentPoliciesByMarketplace($request);
+		$response = $accountService->getFulfillmentPoliciesByMarketplace($request);
 
 		$list = [];
 
 		foreach($response->fulfillmentPolicies as $fulfillmentPolicy)
 		{
-			$list[$fulfillmentPolicy->fulfillmentPolicyId] = $fulfillmentPolicy->name;
+			$list[ $fulfillmentPolicy->fulfillmentPolicyId ] = $fulfillmentPolicy->name;
 		}
 
 		return $list;
+	}
+
+	/**
+	 * Create a Return Policy.
+	 */
+	public function createReturnPolicy()
+	{
+		/** @var AccountService $accountService */
+		$accountService = pluginApp(AccountService::class, [
+			'config' => [
+				'accessToken'  => $this->config->get('TestEbaySdk.accessToken'),
+				'refreshToken' => $this->config->get('TestEbaySdk.refreshToken'),
+			]
+		]);
+
+		/** @var CreateAReturnPolicyRestRequest $request */
+		$request = pluginApp(CreateAReturnPolicyRestRequest::class, [
+			'values' => [
+				'marketplaceId'           => MarketplaceIdEnum::C_EBAY_DE,
+				'name'                    => 'Test Return Policy REST',
+				'description'             => 'This is a test return policy',
+				'refundMethod'            => RefundMethodEnum::C_MONEY_BACK,
+				'restockingFeePercentage' => '10',
+				'returnInstructions'      => 'This are my return instructions',
+				'returnPeriod'            => [
+					'unit'  => TimeDurationUnitEnum::C_DAY,
+					'value' => 14,
+				],
+				'returnsAccepted'         => true,
+				'returnShippingCostPayer' => ReturnShippingCostPayerEnum::C_BUYER,
+			],
+		]);
+
+
+		$response = $accountService->createAReturnPolicy($request);
+	}
+
+	public function getReturnPolicyById()
+	{
+
 	}
 }

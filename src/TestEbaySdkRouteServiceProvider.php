@@ -22,6 +22,10 @@ class TestEbaySdkRouteServiceProvider extends RouteServiceProvider
 			$router->get('markets/ebay/test/get-fulfillment-policies-by-marketplace', [
 				'uses' => 'TestEbaySdk\Controllers\TestAccountController@getFulfillmentPoliciesByMarketplace'
 			]);
+
+			$router->post('markets/ebay/test/create-a-return-policy', [
+				'uses' => 'TestEbaySdk\Controllers\TestAccountController@createReturnPolicy'
+			]);
 		});
 	}
 }
